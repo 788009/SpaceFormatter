@@ -1,5 +1,5 @@
 // 定义一个函数来处理文本中的汉字、字母/数字和符号之间的空格
-function FormatSpace(text) {
+function formatSpace(text) {
     return text
         .replace(/([\u4e00-\u9fa5])([a-zA-Z0-9])/g, '\$1 \$2')
         .replace(/([a-zA-Z0-9])([\u4e00-\u9fa5])/g, '\$1 \$2')
@@ -8,16 +8,21 @@ function FormatSpace(text) {
         .replace(/([a-zA-Z0-9])\/([a-zA-Z0-9])/g, '\$1 / \$2')
         
         // 在指定符号与汉字之间加上空格
-        .replace(/([a-zA-Z0-9])(["'`.,\[\]\(\)])([\u4e00-\u9fa5])/g, '\$2 \$2')
-        .replace(/([\u4e00-\u9fa5])(["'`.,\[\]\(\)])([a-zA-Z0-9])/g, '\$1 \$2');
+        .replace(/([a-zA-Z0-9])(["'`.,\[\]\(\)])([\u4e00-\u9fa5])/g, '\&1\$2 \$3')
+        .replace(/([\u4e00-\u9fa5])(["'`.,\[\]\(\)])([a-zA-Z0-9])/g, '\$1 \$2\$3')
+
+        .replace(/([\u4e00-\u9fa5])(<\/?[\w\s="'-]+>)([a-zA-Z0-9])/g, '\$1 \$2\$3')
+        .replace(/([a-zA-Z0-9])(<\/?[\w\s="'-]+>)([\u4e00-\u9fa5])/g, '\$1\$2 \$3');
+
 }
 
-// 处理文本节点中的内容
 function processTextNode(node) {
     const originalText = node.textContent;
     if (originalText.trim()) {
-        const processedText = FormatSpace(originalText);
-        node.textContent = processedText;
+        const processedText = formatSpace(originalText);
+        console.log(node.textContent);
+        if(node.textContent != processedText)
+            node.textContent = processedText;
     }
 }
 
@@ -39,10 +44,28 @@ function processVisibleTextNodes() {
         processTextNode(node);
     }
 }
+function processParagraphs() {
+    // Select all <p> elements
+    const paragraphs = document.querySelectorAll('p');
+    console.log(paragraphs);
+    paragraphs.forEach(paragraph => {
+        // Extract the text content including HTML tags
+        let text = paragraph.innerHTML;
+        console.log(text);
+
+        // Process the text
+        let formattedText = formatSpace(text);
+
+        // Update the <p> element with the processed text
+        if(paragraph.innerHTML != formattedText)
+            paragraph.innerHTML = formattedText;
+    });
+}
 
 // 处理用户交互事件
 function handleUserInteraction() {
     processVisibleTextNodes();
+    processParagraphs();
 }
 
 // 监听用户交互事件
@@ -52,5 +75,5 @@ document.addEventListener('keydown', handleUserInteraction);
 
 // 如果需要在页面加载时也处理一次，可以调用下面的函数
 document.addEventListener('DOMContentLoaded', () => {
-    processVisibleTextNodes();
+    handleUserInteraction();
 });
