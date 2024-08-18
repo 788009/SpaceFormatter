@@ -1,0 +1,12 @@
+﻿{
+  "name": "Space Formatter",
+  "version": "1.0",
+  "manifest_version": 3,
+  "description": "在汉字与英文/数字之间添加空格",
+  "permissions": ["activeTab"],
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["content_script.js"],
+    "run_at": "document_end"
+  }]
+}
