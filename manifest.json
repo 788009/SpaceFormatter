@@ -8,6 +8,6 @@
     "matches": ["<all_urls>"],
     "js": ["content_script.js"],
     "run_at": "document_end",
-    "exclude_matches": ["*://shimo.im/*"]
+    "exclude_matches": ["*://shimo.im/sheets/*", "*://docs.qq.com/sheet/*"]
   }]
 }
