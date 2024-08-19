@@ -5,17 +5,26 @@ function formatSpace(text) {
         .replace(/([a-zA-Z0-9])([\u4e00-\u9fa5])/g, '\$1 \$2')
 
         // 在斜杠（/）的左右两边都加上空格（若左右有字母或数字）
-        .replace(/([a-zA-Z0-9])\/([a-zA-Z0-9])/g, '\$1 / \$2')
+        //.replace(/([a-zA-Z0-9])\//g, '\$1 / ')
+        //.replace(/(!<)\/([a-zA-Z0-9])/g, '\$1 / \$2')
         
         // 在指定符号与汉字之间加上空格
-        .replace(/([a-zA-Z0-9])(["'`.,\[\]\(\)])([\u4e00-\u9fa5])/g, '\&1\$2 \$3')
-        .replace(/([\u4e00-\u9fa5])(["'`.,\[\]\(\)])([a-zA-Z0-9])/g, '\$1 \$2\$3')
+        .replace(/([a-zA-Z0-9])(["'`.,\]\)])([\u4e00-\u9fa5])/g, '\&1\$2 \$3')
+        .replace(/([\u4e00-\u9fa5])(["'`.,\[\(])([a-zA-Z0-9])/g, '\$1 \$2\$3')
+        .replace(/(\(\))([\u4e00-\u9fa5])/g, '\$1 \$2')
 
+        // 处理内联元素标签
         .replace(/([\u4e00-\u9fa5])(<\/?[\w\s="'-]+>)([a-zA-Z0-9])/g, '\$1 \$2\$3')
-        .replace(/([a-zA-Z0-9])(<\/?[\w\s="'-]+>)([\u4e00-\u9fa5])/g, '\$1\$2 \$3');
+        .replace(/([a-zA-Z0-9])(<\/?[\w\s="'-]+>)([\u4e00-\u9fa5])/g, '\$1\$2 \$3')
+
+        // 以下似乎没效果
+        .replace(/([a-zA-Z0-9])(<\/?[\w\s="'-]+>)(["'`.,\]\)])([\u4e00-\u9fa5])/g, '\&1\$2\$3 \$4')
+        .replace(/([a-zA-Z0-9])(["'`.,\]\)])(<\/?[\w\s="'-]+>)([\u4e00-\u9fa5])/g, '\&1\$2\$3 \$4')
+        .replace(/([\u4e00-\u9fa5])(<\/?[\w\s="'-]+>)(["'`.,\[\(])([a-zA-Z0-9])/g, '\$1 \$2\$3\$4')
+        .replace(/([\u4e00-\u9fa5])(["'`.,\[\(])(<\/?[\w\s="'-]+>)([a-zA-Z0-9])/g, '\$1 \$2\$3\$4');
 
 }
-
+        
 function processTextNode(node) {
     const originalText = node.textContent;
     if (originalText.trim()) {
@@ -45,7 +54,7 @@ function processVisibleTextNodes() {
 }
 function processParagraphs() {
     // Select all <p> elements
-    const paragraphs = document.querySelectorAll('p');
+    const paragraphs = document.querySelectorAll('p', 'a');
     paragraphs.forEach(paragraph => {
         // Extract the text content including HTML tags
         let text = paragraph.innerHTML;
