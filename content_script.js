@@ -20,7 +20,6 @@ function processTextNode(node) {
     const originalText = node.textContent;
     if (originalText.trim()) {
         const processedText = formatSpace(originalText);
-        console.log(node.textContent);
         if(node.textContent != processedText)
             node.textContent = processedText;
     }
@@ -47,11 +46,9 @@ function processVisibleTextNodes() {
 function processParagraphs() {
     // Select all <p> elements
     const paragraphs = document.querySelectorAll('p');
-    console.log(paragraphs);
     paragraphs.forEach(paragraph => {
         // Extract the text content including HTML tags
         let text = paragraph.innerHTML;
-        console.log(text);
 
         // Process the text
         let formattedText = formatSpace(text);
